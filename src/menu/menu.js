@@ -1,6 +1,6 @@
-import {Container,Text } from "pixi.js";
+import { Container, FillGradient, Text} from "pixi.js";
 import {HEIGHT, WIDTH} from "../constants/constants.js";
-import {CartoonTextFilter} from "../helpers/cartoon-filter.js";
+
 import gsap from "gsap";
 import {sender} from "../sender/event-sender.js";
 import {state} from "../state.js";
@@ -23,9 +23,18 @@ export class Menu extends Container{
 
         this.title = new Text({text: 'Bubble Shooter', style: {
             fontWeight: 'bold',
-            fontSize: 60,
-            filters: [new CartoonTextFilter({thickness: 7})],
-            fill: 'white',
+            fontSize: 64,
+            fill: new FillGradient({
+                type: 'linear',
+                start: { x: 0, y: 0 },
+                end: { x: 0, y: 1 },
+                colorStops: [
+                    { offset: 0, color: '#0040b8' },
+                    { offset: 1, color: '#067cf4' }
+                ],
+                textureSpace: 'local'
+            }),
+                stroke: { color: '#ffffff', width: 16, join: 'round' },
             }})
         this.title.anchor.set(0.5);
         this.title.position.set(WIDTH/2, HEIGHT/2 - 100);
@@ -35,10 +44,17 @@ export class Menu extends Container{
         this.level = new Text({text: 'Level:', style: {
             fontWeight: 'bold',
             fontSize: 24,
-            // filters: [new CartoonTextFilter({thickness: 2})],
-            stroke: '#ffffff',
-            strokeThickness: 3,
-            fill: '#147ffa',
+                fill: new FillGradient({
+                    type: 'linear',
+                    start: { x: 0, y: 0 },
+                    end: { x: 0, y: 1 },
+                    colorStops: [
+                        { offset: 0, color: '#0040b8' },
+                        { offset: 1, color: '#067cf4' }
+                    ],
+                    textureSpace: 'local'
+                }),
+                stroke: { color: '#ffffff', width: 8, join: 'round' },
             }})
         this.level.anchor.set(0.5);
         this.level.position.set(WIDTH/2, HEIGHT/2  );
@@ -47,10 +63,20 @@ export class Menu extends Container{
 
         this.levelValue = new Text({text: '', style: {
                 fontWeight: 'bold',
-                fontSize: 30,
-                filters: [new CartoonTextFilter({thickness: 4})],
-                fill: 'white',
-            }})
+                fontSize: 40,
+                fill: new FillGradient({
+                    type: 'linear',
+                    start: { x: 0, y: 0 },
+                    end: { x: 0, y: 1 },
+                    colorStops: [
+                        { offset: 0, color: '#0040b8' },
+                        { offset: 1, color: '#067cf4' }
+                    ],
+                    textureSpace: 'local'
+                }),
+                stroke: { color: '#ffffff', width: 10, join: 'round' }
+            },
+        })
         this.levelValue.anchor.set(0.5);
         this.levelValue.position.set(WIDTH/2, HEIGHT/2 + 50 );
 
@@ -66,9 +92,18 @@ export class Menu extends Container{
 
         this.startButton = new Text({text: 'Start', style: {
             fontWeight: 'bold',
-            fontSize: 50,
-            filters: [new CartoonTextFilter({thickness: 7})],
-            fill: 'white',
+            fontSize: 60,
+                fill: new FillGradient({
+                    type: 'linear',
+                    start: { x: 0, y: 0 },
+                    end: { x: 0, y: 1 },
+                    colorStops: [
+                        { offset: 0, color: '#0040b8' },
+                        { offset: 1, color: '#067cf4' }
+                    ],
+                    textureSpace: 'local'
+                }),
+                stroke: { color: '#ffffff', width: 14, join: 'round' },
             }});
         this.startButton.anchor.set(0.5);
         this.startButton.position.set(WIDTH/2, HEIGHT - 150);

@@ -19,7 +19,7 @@ export class BallEmitter extends ParticleContainer{
 
         this.stage.addChild(this);
 
-        for (let i = 0; i < 30; ++i) this.createParticle();
+        for (let i = 0; i < 25; ++i) this.createParticle();
 
         this._onTick = e => this.onTick(e);
 
