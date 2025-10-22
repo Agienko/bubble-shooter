@@ -15,10 +15,10 @@ const canvasContainer = document.createElement('div');
 canvasContainer.classList.add('canvas-container');
 document.body.append(canvasContainer);
 
-const resizer = new Resizer(canvasContainer);
+export const resizer = new Resizer(canvasContainer);
 resizer.init();
 
-const app = new Application();
+export const app = new Application();
 
 await app.init({
     resolution: devicePixelRatio,
@@ -36,7 +36,6 @@ canvasContainer.append(app.canvas);
 
 await Assets.load('/ball.png');
 // await Assets.load('/arrow.png');
-
 
 
 //

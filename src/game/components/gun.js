@@ -1,4 +1,4 @@
-import {Container, Particle, Texture,ParticleContainer} from "pixi.js";
+import {Container, Particle, Texture, ParticleContainer} from "pixi.js";
 import {COLORS, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {Bullet} from "./bullet.js";
 import {randomFromArr} from "../../helpers/helper.js";
@@ -34,14 +34,16 @@ export class Gun extends Container{
         this.stage.addChild(this);
 
         this.eventMode = 'static';
-        this.on('globalpointermove', ({global: {x, y}}) => {
+        this.on('globalpointermove', e => {
+            const {x, y} = e.global;
             this.rotation = Math.PI/2 + Math.atan2(y - HEIGHT, x - WIDTH/2);
         })
         this.bulletTint = randomFromArr(COLORS);
         this.particleContainer.tint = this.bulletTint;
 
     }
-    createBullet(){
+    createBullet({x, y}){
+        this.rotation = Math.PI/2 + Math.atan2(y - HEIGHT, x - WIDTH/2);
         const bullet = new Bullet(this.stage, {rotation: this.rotation - Math.PI/2});
         bullet.tint = this.bulletTint;
 

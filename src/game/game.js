@@ -7,6 +7,7 @@ import {FallingBall} from "./components/falling-ball.js";
 import {effect, signal} from "@preact/signals-core";
 import {Explosion} from "./components/explosion.js";
 import {sender} from "../sender/event-sender.js";
+import {app, resizer} from "../main.js";
 
 export class Game extends Container{
     constructor(stage) {
@@ -40,10 +41,10 @@ export class Game extends Container{
         this.deadLine.y = this.balls.find(b => b.j + 1 === BALL_COUNT_COLUMS).y + 10;
         this.addChild(this.deadLine);
 
-        this._onPointerUp = () => this.onPointerUp()
+        this._onPointerUp = e => this.onPointerUp(e)
         this._onTick = e => this.onTick(e);
 
-        document.addEventListener('pointerup', this._onPointerUp);
+        window.addEventListener('pointerup', this._onPointerUp);
         Ticker.shared.add(this._onTick);
 
 
@@ -86,10 +87,13 @@ export class Game extends Container{
             }
         }
     }
-    onPointerUp(){
-        if(this.bullet || this.inProcess || this.isGameOver.value) return;
+    onPointerUp(e){
+        if(this.inProcess || this.isGameOver.value) return;
         this.inProcess = true;
-        this.bullet = this.gun.createBullet();
+
+        const rect = app.canvas.getBoundingClientRect();
+        const point = {x: (e.x - rect.x) / resizer.scale, y: (e.y - rect.y)/ resizer.scale};
+        this.bullet = this.gun.createBullet(point);
     }
 
     onTick(e){
@@ -98,6 +102,7 @@ export class Game extends Container{
         if(this.bullet.toDelete) {
             this.bullet.destroy();
             this.bullet = null;
+            this.inProcess = false;
             return;
         }
 

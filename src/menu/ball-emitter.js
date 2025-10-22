@@ -19,9 +19,7 @@ export class BallEmitter extends ParticleContainer{
 
         this.stage.addChild(this);
 
-        for (let i = 0; i < 10; ++i) {
-            this.createParticle(true);
-        }
+        for (let i = 0; i < 30; ++i) this.createParticle();
 
         this._onTick = e => this.onTick(e);
 
@@ -29,39 +27,32 @@ export class BallEmitter extends ParticleContainer{
 
     }
     onTick(e){
-        this.particleChildren.forEach(particle => {
+        for(let i = 0; i < this.particleChildren.length; ++i) {
+            const particle = this.particleChildren[i];
             particle.x += particle.vx * e.deltaMS;
             particle.y += particle.vy * e.deltaMS;
 
-
             if(particle.y > HEIGHT || particle.x < -100 || particle.x > WIDTH +100) {
-
-                this.removeParticle(particle);
-                // console.time('remove')
-                this.createParticle();
-                // console.timeEnd('remove')
+                this.randomizeParticle(particle);
             }
-        })
+        }
     }
 
-    createParticle(randomHeight = false){
+    randomizeParticle(particle){
         const scale = Math.random() * 0.3 + 0.1;
-        const particle = new Particle({
-            texture: getTexture(),
-            scaleX: scale,
-            scaleY: scale,
-            tint: randomFromArr(COLORS),
-        })
-        particle.scale = scale;
+        particle.scaleX = scale;
+        particle.scaleY = scale;
+        particle.tint = randomFromArr(COLORS);
         particle.x = Math.random() * WIDTH;
-        if(randomHeight) {
-            particle.y = Math.random() * HEIGHT;
-        } else {
-            particle.y = -100;
-        }
-        particle.vy = Math.random()*0.9 + 0.1
-        particle.vx = (Math.random() - 0.5)*0.8
+        particle.y = -100;
+        particle.vy = 1.5*(Math.random()*0.9 + 0.1)
+        particle.vx = (Math.random() - 0.5)*0.8;
+    }
 
+    createParticle(){
+        const particle = new Particle({texture: getTexture()});
+        this.randomizeParticle(particle);
+        particle.y = Math.random() * HEIGHT;
         this.addParticle(particle)
         return particle;
     }
