@@ -1,14 +1,9 @@
-import {Sprite, Texture} from "pixi.js";
+import {Sprite} from "pixi.js";
 import {BALL_COLUM_STEP, BALL_RADIUS, BALL_SIZE, COLORS} from "../../constants/constants.js";
-import {randomFromArr} from "../../helpers/helper.js";
+import {getTexture, randomFromArr} from "../../helpers/helper.js";
 import gsap from "gsap";
 
-let texture = null;
-export let getTexture = () => {
-    if(texture) return texture;
-    texture = Texture.from('/ball.png');
-    return texture;
-}
+
 
 export class Ball extends Sprite{
     constructor(stage, descriptor) {
@@ -41,7 +36,6 @@ export class Ball extends Sprite{
     }
     set isGhost(value){
         this._isGhost = value;
-        // this.cacheAsTexture(!value)
         this.alpha = value ? 0 : 1;
     }
     setArial(){

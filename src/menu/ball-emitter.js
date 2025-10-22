@@ -1,6 +1,5 @@
 import {Particle, ParticleContainer, Ticker} from "pixi.js";
-import {getTexture} from "../game/components/ball.js";
-import {randomFromArr} from "../helpers/helper.js";
+import {getTexture, randomFromArr} from "../helpers/helper.js";
 import {COLORS, HEIGHT, WIDTH} from "../constants/constants.js";
 
 export class BallEmitter extends ParticleContainer{

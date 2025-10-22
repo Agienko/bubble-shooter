@@ -1,6 +1,6 @@
 import {Particle, ParticleContainer} from "pixi.js";
 import gsap from "gsap";
-import {getTexture} from "./ball.js";
+import {getTexture} from "../../helpers/helper.js";
 
 export class Explosion extends ParticleContainer{
     constructor(stage, descriptor) {
@@ -17,22 +17,22 @@ export class Explosion extends ParticleContainer{
         this.descriptor = descriptor;
         this.position.set(descriptor.x, descriptor.y);
 
-        let amount = 100;
+        let amount = 200;
 
         for (let i = 0; i < amount; ++i) {
             const particle = new Particle({
                 texture: getTexture(),
-                scaleX: 0.05,
-                scaleY: 0.05,
+                scaleX: 0.045,
+                scaleY: 0.045,
                 tint: descriptor.tint,
             })
             this.addParticle(particle)
 
             const rnd = Math.random() * Math.PI * 2;
-            const x = Math.cos(rnd) * Math.random() * 300;
-            const y = Math.sin(rnd) * Math.random() * 100;
+            const x = Math.cos(rnd) * Math.random() * 310;
+            const y = Math.sin(rnd) * Math.random() * 110;
 
-            gsap.to(particle, {x, y, alpha: 0, duration: 1, ease: 'power4.out', onComplete: () =>{
+            gsap.to(particle, {x, y, alpha: 0, duration: 1, ease: 'expo.out', onComplete: () =>{
                     amount--;
                     this.removeParticle(particle);
 

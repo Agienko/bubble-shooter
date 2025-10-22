@@ -1,4 +1,5 @@
 import {state} from "../state.js";
+import {Sprite, Texture} from "pixi.js";
 
 export const randomMinMax = (min, max) => Math.random() * (max - min) + min;
 
@@ -11,4 +12,11 @@ export const getRandomInt = (min, max) => {
 export const randomFromArr = array => {
     const arr = array.slice(state.level);
     return arr[Math.floor(Math.random() * arr.length)]
+}
+
+let texture = null;
+export let getTexture = () => {
+    if(texture) return texture;
+    texture = Texture.from('/ball.png');
+    return texture;
 }

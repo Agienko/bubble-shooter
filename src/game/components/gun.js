@@ -1,7 +1,7 @@
-import {Container, Particle, Texture, ParticleContainer} from "pixi.js";
+import {Container, Particle, ParticleContainer} from "pixi.js";
 import {COLORS, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {Bullet} from "./bullet.js";
-import {randomFromArr} from "../../helpers/helper.js";
+import {getTexture, randomFromArr} from "../../helpers/helper.js";
 
 export class Gun extends Container{
     constructor(stage) {
@@ -10,7 +10,7 @@ export class Gun extends Container{
 
         this.particleContainer = new ParticleContainer({});
 
-        const texture = Texture.from('/ball.png');
+        const texture = getTexture();
 
         for (let i = 0; i < 10; ++i) {
             const particle = new Particle({
@@ -21,7 +21,7 @@ export class Gun extends Container{
                 alpha: 0.8 - i/10,
                 anchorY: 0.5,
                 x: 0,
-                y: -i*20,
+                y: -i*24,
             });
 
             this.particleContainer.addParticle(particle);
