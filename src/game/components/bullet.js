@@ -7,7 +7,7 @@ const MAX_WIDTH = WIDTH - BALL_SIZE;
 export class Bullet extends Ball{
     constructor(stage, descriptor) {
         super(stage, descriptor);
-        this.speed = 30;
+        this.speed = 20;
         this.vx = Math.cos(descriptor.rotation) * this.speed;
         this.vy = Math.sin(descriptor.rotation) * this.speed;
 

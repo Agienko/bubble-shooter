@@ -1,11 +1,19 @@
 import {Sprite, Texture} from "pixi.js";
-import {BALL_COLUM_STEP, BALL_COUNT_COLUMS, BALL_RADIUS, BALL_SIZE, COLORS} from "../../constants/constants.js";
+import {BALL_COLUM_STEP, BALL_RADIUS, BALL_SIZE, COLORS} from "../../constants/constants.js";
 import {randomFromArr} from "../../helpers/helper.js";
+import {Explosion} from "./explosion.js";
+
+let texture = null;
+let getTexture = () => {
+    if(texture) return texture;
+    texture = Texture.from('/ball.png');
+    return texture;
+}
 
 export class Ball extends Sprite{
     constructor(stage, descriptor) {
-        super(Texture.from('/ball.png'));
-
+        super(getTexture());
+        this.descriptor = descriptor;
         this.stage = stage;
         this.toDelete = false;
         this.isOnLand = false;
@@ -17,30 +25,42 @@ export class Ball extends Sprite{
 
         this.i = -1;
         this.j = -1;
-        this.isGhost = false;
+        this._isGhost = false;
 
         this.init(descriptor)
 
         this.stage.addChild(this);
 
     }
+    get isGhost(){
+        return this._isGhost;
+    }
+    set isGhost(value){
+        this._isGhost = value;
+        this.alpha = value ? 0 : 1;
+    }
     init(descriptor){
         this.i = descriptor.i;
         this.j = descriptor.j;
-        this.isGhost = this.j > Math.ceil(BALL_COUNT_COLUMS/2);
+        this.isGhost = descriptor.isGhost;
 
         if(this.isGhost) {
-            this.alpha = 0;
         } else {
-            this.randomTint();
+            this.randomTint(descriptor.tint);
         }
-        const add = this.j % 2 === 0 ? 0 : BALL_RADIUS;
+        const add = descriptor.isEven ? 0 : BALL_RADIUS;
         this.position.set(BALL_SIZE*this.i + add, this.j*BALL_COLUM_STEP);
         this.globalCenter.x = this.x + BALL_RADIUS;
         this.globalCenter.y = this.y + BALL_RADIUS;
+        if(!this.explodion){
+            this.explodion = new Explosion(this.stage,{texture: getTexture(), x: this.globalCenter.x, y: this.globalCenter.y})
+        } else {
+            this.explodion.position.set(this.globalCenter.x, this.globalCenter.y);
+        }
     }
 
-    randomTint(){
-        this.tint = randomFromArr(COLORS)
+
+    randomTint(tint){
+        this.tint = tint ? tint : randomFromArr(COLORS)
     }
 }

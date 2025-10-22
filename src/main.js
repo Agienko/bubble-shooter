@@ -33,7 +33,7 @@ canvasContainer.append(app.canvas);
 
 
 await Assets.load('/ball.png');
-await Assets.load('/arrow.png');
+// await Assets.load('/arrow.png');
 
 new Game(app.stage)
 gsap.to(canvasContainer, {opacity: 1, duration: 2, ease: 'power2.inOut'})
