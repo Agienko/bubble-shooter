@@ -7,9 +7,9 @@ const MAX_WIDTH = WIDTH - BALL_SIZE;
 export class Bullet extends Ball{
     constructor(stage, descriptor) {
         super(stage, descriptor);
-        this.speed = 20;
-        this.vx = Math.cos(descriptor.rotation) * this.speed;
-        this.vy = Math.sin(descriptor.rotation) * this.speed;
+        this.speed = 15;
+        this.vx = Math.cos(descriptor.rotation) * this.speed/10;
+        this.vy = Math.sin(descriptor.rotation) * this.speed/10;
 
     }
     init(){
@@ -18,10 +18,10 @@ export class Bullet extends Ball{
         this.globalCenter.x = this.x + BALL_RADIUS;
         this.globalCenter.y = this.y + BALL_RADIUS;
     }
-    tick(){
+    tick(e){
 
-        this.x += this.vx;
-        this.y += this.vy;
+        this.x += this.vx * e.deltaMS;
+        this.y += this.vy * e.deltaMS;
 
         if(this.x < 0 ) {
             this.x = 0;

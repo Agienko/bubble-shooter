@@ -2,9 +2,11 @@ import './style.css';
 import {gsap} from "gsap";
 import {PixiPlugin} from "gsap/PixiPlugin";
 import * as PIXI from 'pixi.js';
-import {Application, Assets, Sprite, Texture} from "pixi.js";
+import {Application, Assets,} from "pixi.js";
 import {Resizer} from "./resizer/resizer.js";
 import {Game} from "./game/game.js";
+import {sender} from "./sender/event-sender.js";
+import {Menu} from "./menu/menu.js";
 
 gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
@@ -27,7 +29,7 @@ await app.init({
     backgroundColor: 0x000,
 });
 
-canvasContainer.style.opacity = '0';
+// canvasContainer.style.opacity = '0';
 canvasContainer.append(app.canvas);
 
 
@@ -35,8 +37,21 @@ canvasContainer.append(app.canvas);
 await Assets.load('/ball.png');
 // await Assets.load('/arrow.png');
 
-new Game(app.stage)
-gsap.to(canvasContainer, {opacity: 1, duration: 2, ease: 'power2.inOut'})
+
+
+//
+new Menu(app.stage)
+
+sender.on('start', () => {
+    new Game(app.stage)
+})
+
+sender.on('restart', () => {
+    new Menu(app.stage)
+})
+
+// new Game(app.stage)
+// gsap.to(canvasContainer, {opacity: 1, duration: 2, ease: 'power2.inOut'})
 
 
 

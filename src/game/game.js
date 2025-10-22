@@ -1,14 +1,23 @@
-import {Container, Sprite, Texture, Ticker} from "pixi.js";
+import {Container, Sprite, Text, Texture, Ticker} from "pixi.js";
 import {BALL_COLUM_STEP, BALL_COUNT_COLUMS, BALL_COUNT_ROWS, BALL_SIZE, HEIGHT, WIDTH} from "../constants/constants.js";
 import {Gun} from "./components/gun.js";
 import {Ball} from "./components/ball.js";
 import gsap from "gsap";
 import {FallingBall} from "./components/falling-ball.js";
 import {effect, signal} from "@preact/signals-core";
+import {Explosion} from "./components/explosion.js";
+import {sender} from "../sender/event-sender.js";
 
-export class Game {
+export class Game extends Container{
     constructor(stage) {
+        super();
         this.stage = stage;
+
+        stage.addChild(this);
+
+        this.alpha = 0;
+        gsap.to(this, {alpha: 1, duration: 0.3})
+
         this.isGameOver = signal(false);
         this.balls = [];
         this.bullet = null;
@@ -17,21 +26,22 @@ export class Game {
         this.inProcess = false;
 
         this.ballStage = new Container();
-        this.stage.addChild(this.ballStage);
+        this.addChild(this.ballStage);
 
         this.createBalls();
 
-        this.gun = new Gun(this.stage);
+        this.gun = new Gun(this);
 
         this.deadLine = new Sprite(Texture.WHITE);
+        this.deadLine.tint = 0xaa0000;
         this.deadLine.width = WIDTH;
-        this.deadLine.alpha = 0.1
+        this.deadLine.alpha = 0.3
         this.deadLine.height = 2;
         this.deadLine.y = this.balls.find(b => b.j + 1 === BALL_COUNT_COLUMS).y + 10;
-        this.stage.addChild(this.deadLine);
+        this.addChild(this.deadLine);
 
         this._onPointerUp = () => this.onPointerUp()
-        this._onTick = () => this.onTick();
+        this._onTick = e => this.onTick(e);
 
         document.addEventListener('pointerup', this._onPointerUp);
         Ticker.shared.add(this._onTick);
@@ -39,7 +49,26 @@ export class Game {
 
         this.stop = effect(() => {
             if(!this.isGameOver.value) return;
-            this.stage.alpha = 0.5;
+            this.ballStage.alpha = 0.5;
+            const text = new Text({
+                text: 'Game Over',
+                style: {
+                    fontWeight: 'bold',
+                    fontSize: 50,
+                    fill: 'white',
+                }
+            });
+            text.anchor.set(0.5);
+            text.position.set(WIDTH/2, HEIGHT/2);
+            this.addChild(text);
+            this.stop();
+
+            gsap.to(this, {alpha: 0, delay: 3, duration: 0.5, onComplete: () => {
+                    this.stage.removeChild(this);
+                    this.destroy({children: true});
+                    sender.send('restart')
+                }})
+
         })
 
 
@@ -50,7 +79,7 @@ export class Game {
                 const isEven = j % 2 === 0;
                 if(!isEven && i === 10) continue;
                 const sprite = new Ball(this.ballStage, {i, j, isEven,
-                    isGhost: j > Math.floor((BALL_COUNT_COLUMS - 1)/2)
+                    isGhost: j > 5
                 });
 
                 this.balls.push(sprite);
@@ -63,9 +92,9 @@ export class Game {
         this.bullet = this.gun.createBullet();
     }
 
-    onTick(){
+    onTick(e){
         if(!this.bullet || this.bullet.toDelete) return;
-        this.bullet.tick();
+        this.bullet.tick(e);
         if(this.bullet.toDelete) {
             this.bullet.destroy();
             this.bullet = null;
@@ -162,14 +191,9 @@ export class Game {
                 if(b.toDelete){
                     b.isGhost = true;
                     if(currentTint === b.tint){
-                        b.explodion.explode(currentTint);
+                        new Explosion(this, {x: b.x, y: b.y, tint: b.tint})
                     } else {
-                        const fallingBall = new FallingBall(this.stage, {i: b.i, j: b.j - 1});
-                        fallingBall.position.set(b.x, b.y);
-                        fallingBall.tint = b.tint;
-                        gsap.to(fallingBall, {y: fallingBall.y + 300, alpha: 0, duration: 0.5, ease: 'back.in(2.0)', onComplete: () => {
-                            fallingBall.destroy();
-                            }})
+                        new FallingBall(this, {x: b.x, y: b.y, tint: b.tint});
                     }
                     b.tint = 0xffffff
                 }
@@ -236,11 +260,10 @@ export class Game {
             const ball = this.balls[i];
             if(ball.isGhost) continue;
             if(ball.j + 1 === BALL_COUNT_COLUMS) {
+                ball.setArial()
                 this.isGameOver.value = true;
-                return true
             }
         }
-        return false;
     }
 
     checkIslands(){
@@ -257,11 +280,9 @@ export class Game {
                 const deltaY = ball.globalCenter.y - currentBall.globalCenter.y;
 
                 if(Math.abs(deltaX) <= BALL_SIZE + 5 && Math.abs(deltaY) <= BALL_SIZE + 5) newBalls.push(ball);
-
             }
 
             for(let i = 0; i < newBalls.length; ++i) recursive(newBalls[i]);
-
         }
 
         for(let i = 0; i < topBalls.length; ++i) recursive(topBalls[i]);
@@ -272,15 +293,16 @@ export class Game {
         }
     }
 
-    destroy(){
-        this.stage.children.forEach(c => c.destroy({children:true}));
-        this.balls = null;
-        this.bullet = null;
-        this.attempts = 0;
+    destroy(p){
+        document.removeEventListener('pointerup', this._onPointerUp);
+        Ticker.shared.remove(this._onTick);
         this.ballStage.destroy({children: true});
         this.gun.destroy({children: true});
         this.stop()
-        document.removeEventListener('pointerup', this._onPointerUp);
-        Ticker.shared.remove(this._onTick);
+
+        this.balls = null;
+        this.bullet = null;
+        this.attempts = 0;
+        super.destroy(p)
     }
 }

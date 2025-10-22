@@ -1,10 +1,13 @@
 export const WIDTH = 768;
 export const HEIGHT = 1024;
 export const RATIO = WIDTH / HEIGHT;
-export const COLORS = ['#FF4B4B', '#4BC0FF',
-    '#5CFF5C',
-    '#FFE14B',
-    '#C44BFF'
+export const COLORS = [
+    '#ffffff',
+    '#00b2ff',
+    '#FFFF00',
+    '#CF51FF',
+    '#00ff00',
+    '#FF4B4B',
 ];
 
 export const BALL_COUNT_ROWS = 11;

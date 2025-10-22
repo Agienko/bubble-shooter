@@ -1,31 +1,22 @@
-import {Container, Particle, Sprite, Texture,ParticleContainer} from "pixi.js";
+import {Container, Particle, Texture,ParticleContainer} from "pixi.js";
 import {COLORS, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {Bullet} from "./bullet.js";
 import {randomFromArr} from "../../helpers/helper.js";
-
 
 export class Gun extends Container{
     constructor(stage) {
         super();
         this.stage = stage;
 
-        // this.arrow = new Sprite(Texture.from('/arrow.png'))
-        // this.addChild(this.arrow);
-        // this.arrow.width = WIDTH/36;
-        // this.arrow.height = HEIGHT/10;
-        // this.arrow.anchor.x = 0.5;
-        // this.arrow.anchor.y = 1;
-
         this.particleContainer = new ParticleContainer({});
-
 
         const texture = Texture.from('/ball.png');
 
         for (let i = 0; i < 10; ++i) {
             const particle = new Particle({
                 texture,
-                scaleX: 0.05,
-                scaleY: 0.05,
+                scaleX: 0.08,
+                scaleY: 0.08,
                 anchorX: 0.5,
                 alpha: 0.8 - i/10,
                 anchorY: 0.5,
@@ -36,18 +27,11 @@ export class Gun extends Container{
             this.particleContainer.addParticle(particle);
         }
 
-        // this.particleContainer.
-
         this.addChild(this.particleContainer);
-
-
-
 
         this.position.set(WIDTH/2, HEIGHT);
         this.pivot.x = this.width/2;
         this.stage.addChild(this);
-
-
 
         this.eventMode = 'static';
         this.on('globalpointermove', ({global: {x, y}}) => {
@@ -55,7 +39,6 @@ export class Gun extends Container{
         })
         this.bulletTint = randomFromArr(COLORS);
         this.particleContainer.tint = this.bulletTint;
-        // this.arrow.tint = this.bulletTint;
 
     }
     createBullet(){
@@ -63,7 +46,7 @@ export class Gun extends Container{
         bullet.tint = this.bulletTint;
 
         this.bulletTint = randomFromArr(COLORS);
-        // this.arrow.tint = this.bulletTint;
+
         this.particleContainer.tint = this.bulletTint;
 
         return bullet;
