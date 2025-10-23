@@ -1,5 +1,5 @@
 import {state} from "../state.js";
-import {Sprite, Texture} from "pixi.js";
+import {Texture} from "pixi.js";
 
 export const randomMinMax = (min, max) => Math.random() * (max - min) + min;
 

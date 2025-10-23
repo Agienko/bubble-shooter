@@ -1,6 +1,6 @@
 import {Particle, ParticleContainer} from "pixi.js";
 import gsap from "gsap";
-import {getTexture} from "../../helpers/helper.js";
+import {getRandomInt, getTexture} from "../../helpers/helper.js";
 
 export class Explosion extends ParticleContainer{
     constructor(stage, descriptor) {
@@ -17,7 +17,7 @@ export class Explosion extends ParticleContainer{
         this.descriptor = descriptor;
         this.position.set(descriptor.x, descriptor.y);
 
-        let amount = 180;
+        let amount = getRandomInt(100, 200);
 
         for (let i = 0; i < amount; ++i) {
             const particle = new Particle({
@@ -41,9 +41,7 @@ export class Explosion extends ParticleContainer{
                         this.destroy({children: true});
                     }
                 }})
-
         }
-
 
         this.stage.addChild(this);
     }

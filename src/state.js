@@ -8,4 +8,4 @@ export const state = {
     score: signal(0),
 }
 
-window.state = state;
+// window.state = state;

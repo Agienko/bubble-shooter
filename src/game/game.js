@@ -83,9 +83,7 @@ export class Game extends Container{
                     this.destroy({children: true});
                     sender.send('restart')
                 }})
-
         })
-
 
     }
     createBalls(){

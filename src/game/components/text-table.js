@@ -1,6 +1,7 @@
 import {Container, Text} from "pixi.js";
 import {effect} from "@preact/signals-core";
 import {WIDTH} from "../../constants/constants.js";
+import {state} from "../../state.js";
 
 export class TextTable extends Container {
     constructor(stage, attemptsSignal) {

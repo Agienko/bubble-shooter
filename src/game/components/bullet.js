@@ -4,7 +4,6 @@ import {state} from "../../state.js";
 import {Explosion} from "./explosion.js";
 import {effect, signal} from "@preact/signals-core";
 
-
 const MAX_WIDTH = WIDTH - BALL_SIZE;
 
 export class Bullet extends Ball{

@@ -29,28 +29,15 @@ await app.init({
     backgroundColor: 0x000,
 });
 
-// canvasContainer.style.opacity = '0';
 canvasContainer.append(app.canvas);
 
-
-
 await Assets.load('/ball.png');
-// await Assets.load('/arrow.png');
 
+new Menu(app.stage);
 
-//
-new Menu(app.stage)
+sender.on('start', () => new Game(app.stage));
 
-sender.on('start', () => {
-    new Game(app.stage)
-})
-
-sender.on('restart', () => {
-    new Menu(app.stage)
-})
-
-// new Game(app.stage)
-// gsap.to(canvasContainer, {opacity: 1, duration: 2, ease: 'power2.inOut'})
+sender.on('restart', () => new Menu(app.stage));
 
 
 

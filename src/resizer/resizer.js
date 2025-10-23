@@ -7,9 +7,7 @@ export class Resizer {
         this.#inited = false;
 
         this.#canvasContainer = canvasContainer;
-
         this.#scale = signal(1);
-
     }
 
     get scale(){

@@ -140,9 +140,7 @@ export class Arrow extends ParticleContainer{
 
                 mini.r += e.deltaMS/8;
                 if(mini.r > MAX_SIZE) mini.r = 0;
-
             }
-
         }
     }
 
@@ -162,7 +160,6 @@ export class Arrow extends ParticleContainer{
 
         state.angle = angle;
 
-
         const cos = Math.cos(state.angle);
         const sin = Math.sin(state.angle);
 
@@ -173,9 +170,6 @@ export class Arrow extends ParticleContainer{
             mini.x = this.mirroredX(mini.r, cos);
             mini.y = mini.r * sin + HEIGHT;
         }
-
-
-
 
     }
     mirroredX(x, cos){

@@ -1,10 +1,15 @@
 import { Container, FillGradient, Text} from "pixi.js";
 import {HEIGHT, WIDTH} from "../constants/constants.js";
-
 import gsap from "gsap";
 import {sender} from "../sender/event-sender.js";
 import {state} from "../state.js";
 import {BallEmitter} from "./ball-emitter.js";
+
+const LEVELS = [
+    {text: 'EASY', id: 2},
+    {text: 'MEDIUM', id: 1},
+    {text: 'HARD', id: 0}
+];
 
 export class Menu extends Container{
     constructor(stage) {
@@ -12,38 +17,47 @@ export class Menu extends Container{
         this.stage = stage;
 
         this.ballEmitter = new BallEmitter(this,{});
-
         this.addChild(this.ballEmitter);
+
+        this.levelId = state.level;
+
+        this.createTitle();
+        this.createLevelStaticText();
+        this.createLevelValueText();
+        this.createStartButton();
+        this.createInfo();
 
         this.alpha = 0;
         gsap.to(this, {alpha: 1, duration: 0.3})
 
-        this.levels = [{text: 'EASY', id: 2}, {text: 'MEDIUM', id: 1}, {text: 'HARD', id: 0}];
-        this.levelId = state.level;
+        this.stage.addChild(this);
 
+    }
+    createTitle(){
         this.title = new Text({text: 'Bubble Shooter', style: {
-            fontWeight: 'bold',
-            fontSize: 64,
-            fill: new FillGradient({
-                type: 'linear',
-                start: { x: 0, y: 0 },
-                end: { x: 0, y: 1 },
-                colorStops: [
-                    { offset: 0, color: '#0040b8' },
-                    { offset: 1, color: '#067cf4' }
-                ],
-                textureSpace: 'local'
-            }),
+                fontWeight: 'bold',
+                fontSize: 64,
+                fill: new FillGradient({
+                    type: 'linear',
+                    start: { x: 0, y: 0 },
+                    end: { x: 0, y: 1 },
+                    colorStops: [
+                        { offset: 0, color: '#0040b8' },
+                        { offset: 1, color: '#067cf4' }
+                    ],
+                    textureSpace: 'local'
+                }),
                 stroke: { color: '#ffffff', width: 16, join: 'round' },
             }})
         this.title.anchor.set(0.5);
         this.title.position.set(WIDTH/2, HEIGHT/2 - 100);
         this.addChild(this.title);
+    }
 
-
+    createLevelStaticText(){
         this.level = new Text({text: 'Level:', style: {
-            fontWeight: 'bold',
-            fontSize: 24,
+                fontWeight: 'bold',
+                fontSize: 24,
                 fill: new FillGradient({
                     type: 'linear',
                     start: { x: 0, y: 0 },
@@ -60,7 +74,9 @@ export class Menu extends Container{
         this.level.position.set(WIDTH/2, HEIGHT/2  );
         this.level.resolution = 2;
         this.addChild(this.level);
+    }
 
+    createLevelValueText(){
         this.levelValue = new Text({text: '', style: {
                 fontWeight: 'bold',
                 fontSize: 40,
@@ -82,17 +98,21 @@ export class Menu extends Container{
 
         this.levelValue.eventMode = 'static';
         this.levelValue.cursor = 'pointer';
-        this.levelValueTween = gsap.to(this.levelValue.scale, {x: 1.2, y: 1.2, duration: 1.5, yoyo: true, repeat: -1, ease: 'sine.inOut'})
 
         this.levelValue.on('pointerup', () => this.onLevelChange())
 
-        this.levelValue.text = this.levels[this.levelId].text;
+        this.levelValue.text = LEVELS[this.levelId].text;
         this.level.text = 'Level:';
+        this.levelValueTween = gsap.to(this.levelValue.scale, {x: 1.2, y: 1.2, duration: 1.5, yoyo: true, repeat: -1, ease: 'sine.inOut'})
+
         this.addChild(this.levelValue);
 
+    }
+
+    createStartButton(){
         this.startButton = new Text({text: 'Start', style: {
-            fontWeight: 'bold',
-            fontSize: 60,
+                fontWeight: 'bold',
+                fontSize: 60,
                 fill: new FillGradient({
                     type: 'linear',
                     start: { x: 0, y: 0 },
@@ -114,7 +134,9 @@ export class Menu extends Container{
         this.startButton.on('pointerup', () => this.onStart())
 
         this.startButtonTween = gsap.to(this.startButton.scale, {x: 1.2, y: 1.2, duration: 0.5, yoyo: true, repeat: -1, ease: 'sine.inOut'})
+    }
 
+    createInfo(){
         this.info = new Text({text: 'Yurii Ahiienko 2025', style: {
                 fontSize: 12,
                 fill: 'white',
@@ -123,29 +145,28 @@ export class Menu extends Container{
         this.info.anchor.set(0.5);
         this.info.position.set(WIDTH/2, HEIGHT  - 14);
         this.addChild(this.info);
-
-        this.stage.addChild(this);
-
     }
 
     onLevelChange(){
-        this.levelId = (this.levelId + 1) % this.levels.length;
-        this.levelValue.text = this.levels[this.levelId].text;
+        this.levelId = (this.levelId + 1) % LEVELS.length;
+        this.levelValue.text = LEVELS[this.levelId].text;
     }
 
     onStart(){
         gsap.to(this, {alpha: 0, duration: 0.3, onComplete: () => {
-                state.level = this.levels[this.levelId].id;
+                state.level = LEVELS[this.levelId].id;
                 this.stage.removeChild(this);
                 this.destroy();
                 sender.send('start')
             }})
-
     }
 
     destroy(options) {
         this.levelValueTween.kill();
         this.startButtonTween.kill();
+        this.levelValueTween = null;
+        this.startButtonTween = null;
+        this.stage.removeChild(this);
         this.ballEmitter.destroy({children: true});
         this.ballEmitter = null;
         super.destroy(options);
