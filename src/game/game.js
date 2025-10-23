@@ -8,6 +8,8 @@ import {effect, signal} from "@preact/signals-core";
 import {Explosion} from "./components/explosion.js";
 import {sender} from "../sender/event-sender.js";
 import {app, resizer} from "../main.js";
+import {Arrow} from "./components/arrow.js";
+import {state} from "../state.js";
 
 export class Game extends Container{
     constructor(stage) {
@@ -24,12 +26,13 @@ export class Game extends Container{
         this.bullet = null;
         this.attempts = 0;
 
-        this.inProcess = false;
+        state.inProcess.value = false;
 
         this.ballStage = new Container();
-        this.addChild(this.ballStage);
 
         this.createBalls();
+        this.arrow = new Arrow(this, this.balls);
+        this.addChild(this.ballStage);
 
         this.gun = new Gun(this);
 
@@ -55,13 +58,16 @@ export class Game extends Container{
                 text: 'Game Over',
                 style: {
                     fontWeight: 'bold',
-                    fontSize: 50,
+                    fontSize: 60,
                     fill: 'white',
                 }
             });
             text.anchor.set(0.5);
-            text.position.set(WIDTH/2, HEIGHT/2);
+            text.position.set(WIDTH/2, HEIGHT/2 - 120);
             this.addChild(text);
+
+            this.arrow.destroy({children: true});
+            this.arrow = null;
             this.stop();
 
             gsap.to(this, {alpha: 0, delay: 3, duration: 0.5, onComplete: () => {
@@ -88,11 +94,15 @@ export class Game extends Container{
         }
     }
     onPointerUp(e){
-        if(this.inProcess || this.isGameOver.value) return;
-        this.inProcess = true;
+        if(state.inProcess.value || this.isGameOver.value) return;
+        state.inProcess.value = true;
 
         const rect = app.canvas.getBoundingClientRect();
-        const point = {x: (e.x - rect.x) / resizer.scale, y: (e.y - rect.y)/ resizer.scale};
+        const point = {
+            x: (e.x - rect.x) / resizer.scale,
+            y: (e.y - rect.y) / resizer.scale
+        };
+        this.arrow.setAngle( point.x, point.y)
         this.bullet = this.gun.createBullet(point);
     }
 
@@ -102,7 +112,7 @@ export class Game extends Container{
         if(this.bullet.toDelete) {
             this.bullet.destroy();
             this.bullet = null;
-            this.inProcess = false;
+            state.inProcess.value = false;
             return;
         }
 
@@ -210,7 +220,7 @@ export class Game extends Container{
             this.checkGameOver()
             if(this.isGameOver.value) return;
 
-            this.inProcess = false;
+            state.inProcess.value = false;
         } else {
 
             this.checkGameOver()
@@ -226,7 +236,7 @@ export class Game extends Container{
                 this.addRow();
                 this.attempts = 0;
             } else {
-                this.inProcess = false;
+                state.inProcess.value = false;
             }
         }
 
@@ -253,7 +263,7 @@ export class Game extends Container{
                         gsap.to(b, {alpha: 1, duration: 0.2, ease: 'power2.out'});
                     }
                 }
-                this.inProcess = false;
+                state.inProcess.value = false;
                 this.checkGameOver();
 
             }})

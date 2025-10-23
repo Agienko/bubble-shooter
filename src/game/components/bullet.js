@@ -1,5 +1,7 @@
 import {Ball} from "./ball.js";
 import {BALL_RADIUS, BALL_SIZE, HEIGHT, WIDTH} from "../../constants/constants.js";
+import {state} from "../../state.js";
+import {Explosion} from "./explosion.js";
 
 
 const MAX_WIDTH = WIDTH - BALL_SIZE;
@@ -8,8 +10,10 @@ export class Bullet extends Ball{
     constructor(stage, descriptor) {
         super(stage, descriptor);
         this.speed = descriptor.speed ?? 15;
-        this.vx = Math.cos(descriptor.rotation) * this.speed/10;
-        this.vy = Math.sin(descriptor.rotation) * this.speed/10;
+        this.vx = Math.cos(state.angle) * this.speed/10;
+        this.vy = Math.sin(state.angle) * this.speed/10;
+
+        this.timeNow = performance.now();
 
     }
     init(){
@@ -34,7 +38,12 @@ export class Bullet extends Ball{
         this.globalCenter.x = this.x + BALL_RADIUS;
         this.globalCenter.y = this.y + BALL_RADIUS;
 
-        if(this.y >= HEIGHT) this.toDelete = true;
+        if(this.y >= HEIGHT ) this.toDelete = true;
+
+        if(this.timeNow + 4_500 < e.lastTime) {
+            this.toDelete = true;
+            new Explosion(this.stage, {x: this.globalCenter.x, y: this.globalCenter.y, tint: this.tint})
+        }
 
     }
 }

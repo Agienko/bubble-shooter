@@ -3,8 +3,6 @@ import {BALL_COLUM_STEP, BALL_RADIUS, BALL_SIZE, COLORS} from "../../constants/c
 import {getTexture, randomFromArr} from "../../helpers/helper.js";
 import gsap from "gsap";
 
-
-
 export class Ball extends Sprite{
     constructor(stage, descriptor) {
         super(getTexture());
@@ -15,7 +13,7 @@ export class Ball extends Sprite{
 
         this.tween = null;
 
-        this.blendMode = 'overlay';
+        // this.blendMode = 'soft-light';
 
         this.width = BALL_SIZE;
         this.height = BALL_SIZE;
@@ -36,7 +34,8 @@ export class Ball extends Sprite{
     }
     set isGhost(value){
         this._isGhost = value;
-        this.alpha = value ? 0 : 1;
+        // this.alpha = value ? 0 : 1;
+        this.visible = !value;
     }
     setArial(){
         this.tween = gsap.to(this, {alpha: 0, duration: 0.3, yoyo: true, repeat: 5, ease: 'power2.inOut'})
