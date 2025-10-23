@@ -73,7 +73,17 @@ export class Arrow extends ParticleContainer{
         this.eventMode = 'static';
 
         this._onPointerMove = ({global}) => this.setAngle(global.x, global.y)
-        this.on('globalpointermove', this._onPointerMove)
+        this.on('globalpointermove', this._onPointerMove);
+
+        this.ballTween = null;
+        window.addEventListener('pointerdown', () => {
+            this.ballTween?.kill();
+            this.ballTween = gsap.to(this.ball, {y : HEIGHT + 15, duration: 0.25})
+        })
+        window.addEventListener('pointerup', () => {
+            this.ballTween?.kill();
+            this.ball.y = HEIGHT;
+        })
 
         this._onTick = e => this.onTick(e);
         Ticker.shared.add(this._onTick)
@@ -108,6 +118,8 @@ export class Arrow extends ParticleContainer{
 
             if(this.testBall === mini) {
                 mini.r += e.deltaMS*4;
+
+                if(this.maxR < mini.r) this.maxR = mini.r;
 
                 for(let i = 0; i < this.balls.length; i++){
                     const ball = this.balls[i];
@@ -179,6 +191,8 @@ export class Arrow extends ParticleContainer{
     }
 
     destroy(options) {
+        this.ballTween?.kill();
+        this.ballTween = null;
         Ticker.shared.remove(this._onTick);
         this.stop1();
         this.stop2();

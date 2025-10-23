@@ -354,7 +354,6 @@ export class Game extends Container{
         document.removeEventListener('pointerup', this._onPointerUp);
         Ticker.shared.remove(this._onTick);
         this.ballStage.destroy({children: true});
-        this.gun.destroy({children: true});
         this.stop()
 
         this.balls = null;

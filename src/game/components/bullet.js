@@ -1,8 +1,6 @@
 import {Ball} from "./ball.js";
 import {BALL_RADIUS, BALL_SIZE, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {state} from "../../state.js";
-import {Explosion} from "./explosion.js";
-import {effect, signal} from "@preact/signals-core";
 
 const MAX_WIDTH = WIDTH - BALL_SIZE;
 
@@ -12,16 +10,6 @@ export class Bullet extends Ball{
         this.speed = descriptor.speed ?? 15;
         this.vx = Math.cos(state.angle) * this.speed/10;
         this.vy = Math.sin(state.angle) * this.speed/10;
-
-        this.kick = signal(0);
-
-        this.stop = effect(() => {
-            if(this.kick.value <= 8) return;
-            this.stop()
-            this.toDelete = true;
-            new Explosion(this.stage, {x: this.globalCenter.x, y: this.globalCenter.y, tint: this.tint})
-        })
-
     }
     init(){
         this.position.set(WIDTH/2 - BALL_RADIUS, HEIGHT - BALL_RADIUS);
@@ -34,12 +22,10 @@ export class Bullet extends Ball{
         this.y += this.vy * e.deltaMS;
 
         if(this.x < 0 ) {
-            this.kick.value++;
             this.x = 0;
             this.vx = -this.vx;
 
         }else if(this.x >= MAX_WIDTH) {
-            this.kick.value++;
             this.x = MAX_WIDTH;
             this.vx = -this.vx;
         }

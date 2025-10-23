@@ -1,4 +1,4 @@
-export const WIDTH = 768;
+export const WIDTH = 780;
 export const HEIGHT = 1024;
 export const RATIO = WIDTH / HEIGHT;
 export const COLORS = [
