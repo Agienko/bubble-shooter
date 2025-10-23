@@ -13,7 +13,7 @@ export class Ball extends Sprite{
 
         this.tween = null;
 
-        // this.blendMode = 'soft-light';
+        this.blendMode = 'color';
 
         this.width = BALL_SIZE;
         this.height = BALL_SIZE;
@@ -23,6 +23,8 @@ export class Ball extends Sprite{
         this.i = -1;
         this.j = -1;
         this._isGhost = false;
+
+        this.eventMode = 'none';
 
         this.init(descriptor)
 
@@ -34,7 +36,6 @@ export class Ball extends Sprite{
     }
     set isGhost(value){
         this._isGhost = value;
-        // this.alpha = value ? 0 : 1;
         this.visible = !value;
     }
     setArial(){

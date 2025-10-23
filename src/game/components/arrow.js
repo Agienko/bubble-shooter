@@ -7,8 +7,8 @@ import gsap from "gsap";
 
 
 const PERIOD = 2 * WIDTH;
-const AMOUNT = 150;
-const STEP = 50;
+const AMOUNT = 140;
+const STEP = 60;
 const MAX_SIZE = AMOUNT * STEP;
 
 export class Arrow extends ParticleContainer{
@@ -68,8 +68,6 @@ export class Arrow extends ParticleContainer{
         this.testBall.r = 0;
         this.addParticle(this.testBall);
 
-
-
         this.stage.addChild(this);
 
         this.eventMode = 'static';
@@ -87,7 +85,7 @@ export class Arrow extends ParticleContainer{
 
         this.stop2 = effect(() => {
             this.tween?.kill();
-            this.tween = gsap.to(this, {alpha: +!state.inProcess.value, duration: 0.15});
+            this.tween = gsap.to(this, {alpha: +!state.inProcess.value, duration: 0.25});
             this.ball.alpha = +!state.inProcess.value;
         })
 
@@ -130,23 +128,20 @@ export class Arrow extends ParticleContainer{
                 }
             } else {
 
+                const alpha = Math.min( mini.y/HEIGHT, 1 - mini.r/this.maxR)
 
-
-                const corrAlpha = Math.min( mini.y/HEIGHT, 1 - mini.r/Math.min (MAX_SIZE, this.maxR))
-                const alpha = Math.max(corrAlpha, 0);
                 if(mini.r === 0) {
-                    mini.alpha = 1
+                    mini.alpha = 0.8
                 } else if(mini.alpha < alpha) {
                     mini.alpha += 0.03;
                 } else {
-                    mini.alpha -= 0.03;
+                    mini.alpha += -0.03;
                 }
 
                 mini.r += e.deltaMS/8;
                 if(mini.r > MAX_SIZE) mini.r = 0;
 
             }
-
 
         }
     }
@@ -166,6 +161,21 @@ export class Arrow extends ParticleContainer{
         }
 
         state.angle = angle;
+
+
+        const cos = Math.cos(state.angle);
+        const sin = Math.sin(state.angle);
+
+        for (let i = 0; i < this.particleChildren.length; ++i) {
+            const mini = this.particleChildren[i];
+            if (this.ball === mini) continue;
+
+            mini.x = this.mirroredX(mini.r, cos);
+            mini.y = mini.r * sin + HEIGHT;
+        }
+
+
+
 
     }
     mirroredX(x, cos){

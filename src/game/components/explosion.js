@@ -17,7 +17,7 @@ export class Explosion extends ParticleContainer{
         this.descriptor = descriptor;
         this.position.set(descriptor.x, descriptor.y);
 
-        let amount = 200;
+        let amount = 180;
 
         for (let i = 0; i < amount; ++i) {
             const particle = new Particle({

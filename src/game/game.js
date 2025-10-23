@@ -19,6 +19,8 @@ export class Game extends Container{
 
         stage.addChild(this);
 
+        this.productivityAmount = 0;
+
         this.alpha = 0;
         gsap.to(this, {alpha: 1, duration: 0.3})
 
@@ -182,6 +184,33 @@ export class Game extends Container{
         this.removeSame(closestGhostBall);
     }
 
+    calculateScore(amount){
+        const map = {
+            3: 30,
+            4: 50,
+            5: 80,
+        }
+        return map[amount] ?? 120;
+    }
+
+    calculateCombosScore(combos, score){
+        if(combos > 3){
+            return (combos - 1) * 120 + score * 1.5;
+        } else {
+            const map = {
+                0: 0,
+                1: 15,
+                2: 50,
+                3: 90,
+            }
+            return map[combos] + score
+        }
+    }
+
+    calculateProductivity(){
+        return this.productivityAmount >= 5 ? this.productivityAmount * 20: 0;
+    }
+
     removeSame(currentBall){
         const currentTint = currentBall.tint;
         const recursive = currentBall => {
@@ -206,29 +235,35 @@ export class Game extends Container{
         const toDeleteAmount = this.balls.filter(b=> b.toDelete && !b.isGhost).length;
 
         if(toDeleteAmount >= 3){
+            this.productivityAmount++;
+            let score = this.calculateScore(toDeleteAmount);
+            let combos = 0;
             this.checkIslands();
             for(let i = 0; i < this.balls.length; ++i){
                 const b = this.balls[i];
                 if(b.toDelete){
                     b.isGhost = true;
                     if(currentTint === b.tint){
-                        new Explosion(this, {x: b.x, y: b.y, tint: b.tint})
+                        new Explosion(this, {x: b.globalCenter.x, y: b.globalCenter.y, tint: b.tint})
                     } else {
+                        combos++
                         new FallingBall(this, {x: b.x, y: b.y, tint: b.tint});
                     }
                     b.tint = 0xffffff
                 }
                 b.toDelete = false;
                 b.isOnLand = false;
-
             }
+            const totalScore = this.calculateCombosScore(combos, score);
+            const productivityScore = this.calculateProductivity();
+            state.score.value += totalScore + productivityScore;
 
             this.checkGameOver()
             if(this.isGameOver.value) return;
 
             state.inProcess.value = false;
         } else {
-
+            this.productivityAmount = 0;
             this.checkGameOver()
             if(this.isGameOver.value) return;
 
@@ -294,6 +329,7 @@ export class Game extends Container{
         const recursive = currentBall => {
             const newBalls = []
             currentBall.isOnLand = true;
+
             for(const ball of this.balls){
                 if(ball.isGhost || ball.toDelete || ball.isOnLand) continue;
 
@@ -310,7 +346,9 @@ export class Game extends Container{
 
         for(let i = 0; i < this.balls.length; ++i){
             const b = this.balls[i];
-            if(!b.isOnLand && !b.isGhost) b.toDelete = true;
+            if(!b.isOnLand && !b.isGhost) {
+                b.toDelete = true;
+            }
         }
     }
 

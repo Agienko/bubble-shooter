@@ -2,6 +2,7 @@ import {Ball} from "./ball.js";
 import {BALL_RADIUS, BALL_SIZE, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {state} from "../../state.js";
 import {Explosion} from "./explosion.js";
+import {effect, signal} from "@preact/signals-core";
 
 
 const MAX_WIDTH = WIDTH - BALL_SIZE;
@@ -13,11 +14,17 @@ export class Bullet extends Ball{
         this.vx = Math.cos(state.angle) * this.speed/10;
         this.vy = Math.sin(state.angle) * this.speed/10;
 
-        this.timeNow = performance.now();
+        this.kick = signal(0);
+
+        this.stop = effect(() => {
+            if(this.kick.value <= 8) return;
+            this.stop()
+            this.toDelete = true;
+            new Explosion(this.stage, {x: this.globalCenter.x, y: this.globalCenter.y, tint: this.tint})
+        })
 
     }
     init(){
-        // this.randomTint();
         this.position.set(WIDTH/2 - BALL_RADIUS, HEIGHT - BALL_RADIUS);
         this.globalCenter.x = this.x + BALL_RADIUS;
         this.globalCenter.y = this.y + BALL_RADIUS;
@@ -28,9 +35,12 @@ export class Bullet extends Ball{
         this.y += this.vy * e.deltaMS;
 
         if(this.x < 0 ) {
+            this.kick.value++;
             this.x = 0;
             this.vx = -this.vx;
+
         }else if(this.x >= MAX_WIDTH) {
+            this.kick.value++;
             this.x = MAX_WIDTH;
             this.vx = -this.vx;
         }
@@ -39,11 +49,9 @@ export class Bullet extends Ball{
         this.globalCenter.y = this.y + BALL_RADIUS;
 
         if(this.y >= HEIGHT ) this.toDelete = true;
-
-        if(this.timeNow + 4_500 < e.lastTime) {
-            this.toDelete = true;
-            new Explosion(this.stage, {x: this.globalCenter.x, y: this.globalCenter.y, tint: this.tint})
-        }
-
+    }
+    destroy(options) {
+        this.stop();
+        super.destroy(options);
     }
 }
