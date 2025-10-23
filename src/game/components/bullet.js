@@ -1,13 +1,14 @@
 import {Ball} from "./ball.js";
 import {BALL_RADIUS, BALL_SIZE, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {state} from "../../state.js";
+import {filters, sound} from "@pixi/sound";
 
 const MAX_WIDTH = WIDTH - BALL_SIZE;
 
 export class Bullet extends Ball{
     constructor(stage, descriptor) {
         super(stage, descriptor);
-        this.speed = descriptor.speed ?? 15;
+        this.speed =  18;
         this.vx = Math.cos(state.angle) * this.speed/10;
         this.vy = Math.sin(state.angle) * this.speed/10;
     }
@@ -25,9 +26,11 @@ export class Bullet extends Ball{
             this.x = 0;
             this.vx = -this.vx;
 
+            sound.play('ball-throw', {start: 0.01, speed: 0.8, volume: 0.7, filters: [new filters.StereoFilter(-0.85)] })
         }else if(this.x >= MAX_WIDTH) {
             this.x = MAX_WIDTH;
             this.vx = -this.vx;
+            sound.play('ball-throw', {start: 0.01, speed: 0.8, volume: 0.7, filters: [new filters.StereoFilter(0.85)] })
         }
 
         this.globalCenter.x = this.x + BALL_RADIUS;

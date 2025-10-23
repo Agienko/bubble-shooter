@@ -4,6 +4,7 @@ import gsap from "gsap";
 import {sender} from "../sender/event-sender.js";
 import {state} from "../state.js";
 import {BallEmitter} from "./ball-emitter.js";
+import {sound} from "@pixi/sound";
 
 const LEVELS = [
     {text: 'EASY', id: 2},
@@ -150,9 +151,12 @@ export class Menu extends Container{
     onLevelChange(){
         this.levelId = (this.levelId + 1) % LEVELS.length;
         this.levelValue.text = LEVELS[this.levelId].text;
+        sound.play('click', {volume: 0.4, speed: 1.1, end: 0.1});
     }
 
     onStart(){
+        sound.play('click', {volume: 0.5});
+        sound.play('begin', {end: 5.5, volume: 0.5})
         gsap.to(this, {alpha: 0, duration: 0.3, onComplete: () => {
                 state.level = LEVELS[this.levelId].id;
                 this.stage.removeChild(this);

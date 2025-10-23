@@ -11,6 +11,7 @@ import {app, resizer} from "../main.js";
 import {Arrow} from "./components/arrow.js";
 import {state} from "../state.js";
 import {TextTable} from "./components/text-table.js";
+import {sound} from "@pixi/sound";
 
 export class Game extends Container{
     constructor(stage) {
@@ -61,6 +62,8 @@ export class Game extends Container{
 
         this.stop = effect(() => {
             if(!this.isGameOver.value) return;
+            sound.play('game-over', {volume: 0.8});
+
             this.ballStage.alpha = 0.5;
             const text = new Text({
                 text: 'Game Over',
@@ -113,14 +116,15 @@ export class Game extends Container{
     }
 
     onTick(e){
-        if(!this.bullet || this.bullet.toDelete) return;
-        this.bullet.tick(e);
+        if(!this.bullet) return;
+
         if(this.bullet.toDelete) {
             this.bullet.destroy();
             this.bullet = null;
             state.inProcess.value = false;
             return;
         }
+        this.bullet.tick(e);
 
         if(this.bullet.y <= 5) {
             this.onHit(this.bullet);
@@ -261,6 +265,7 @@ export class Game extends Container{
 
             state.inProcess.value = false;
         } else {
+            sound.play('ball-throw', {speed: 0.5, volume: 0.8});
             this.productivityAmount = 0;
             this.checkGameOver()
             if(this.isGameOver.value) return;

@@ -7,6 +7,7 @@ import {Resizer} from "./resizer/resizer.js";
 import {Game} from "./game/game.js";
 import {sender} from "./sender/event-sender.js";
 import {Menu} from "./menu/menu.js";
+import { sound } from '@pixi/sound';
 
 gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
@@ -20,27 +21,31 @@ resizer.init();
 
 export const app = new Application();
 
-await app.init({
-    resolution: devicePixelRatio,
-    autoDensity: true,
-    antialias: false,
-    preference: 'webgpu',
-    resizeTo: canvasContainer,
-    backgroundColor: 0x000,
-});
+sound.add('begin', '/begin.mp3');
+sound.add('click', '/click.mp3');
+sound.add('ball-throw', '/ball-throw.mp3');
+sound.add('explode', '/explode.mp3');
+sound.add('game-over', '/game-over.mp3');
 
-canvasContainer.append(app.canvas);
+(async ()=>{
 
-await Assets.load('/ball.png');
+    await app.init({
+        resolution: devicePixelRatio,
+        autoDensity: true,
+        antialias: false,
+        preference: 'webgpu',
+        resizeTo: canvasContainer,
+        backgroundColor: 0x000,
+    });
 
-new Menu(app.stage);
+    canvasContainer.append(app.canvas);
 
-sender.on('start', () => new Game(app.stage));
+    await Assets.load('/ball.png');
 
-sender.on('restart', () => new Menu(app.stage));
+    new Menu(app.stage);
 
+    sender.on('start', () => new Game(app.stage));
 
+    sender.on('restart', () => new Menu(app.stage));
 
-
-
-
+})()
