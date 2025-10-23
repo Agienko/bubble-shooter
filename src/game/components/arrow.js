@@ -197,6 +197,8 @@ export class Arrow extends ParticleContainer{
     destroy(options) {
         this.ballTween?.kill();
         this.ballTween = null;
+        this.tween?.kill();
+        this.tween = null;
         Ticker.shared.remove(this._onTick);
         this.stop1();
         this.stop2();
