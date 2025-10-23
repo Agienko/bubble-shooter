@@ -76,14 +76,18 @@ export class Arrow extends ParticleContainer{
         this.on('globalpointermove', this._onPointerMove);
 
         this.ballTween = null;
-        window.addEventListener('pointerdown', () => {
+
+        this._onPointerDown = () => {
             this.ballTween?.kill();
-            this.ballTween = gsap.to(this.ball, {y : HEIGHT + 15, duration: 0.25})
-        })
-        window.addEventListener('pointerup', () => {
+            this.ballTween = gsap.to(this.ball, {y : HEIGHT + 5, duration: 0.3, ease: 'circle.in'})
+        }
+
+        this._onPointerUp = () => {
             this.ballTween?.kill();
             this.ball.y = HEIGHT;
-        })
+        }
+        window.addEventListener('pointerdown', this._onPointerDown)
+        window.addEventListener('pointerup', this._onPointerUp)
 
         this._onTick = e => this.onTick(e);
         Ticker.shared.add(this._onTick)
@@ -196,6 +200,8 @@ export class Arrow extends ParticleContainer{
         Ticker.shared.remove(this._onTick);
         this.stop1();
         this.stop2();
+        window.removeEventListener('pointerdown', this._onPointerDown)
+        window.removeEventListener('pointerup', this._onPointerUp)
         this.off('globalpointermove', this._onPointerMove)
         super.destroy(options);
     }

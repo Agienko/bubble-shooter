@@ -2,6 +2,7 @@ import {Container, Text} from "pixi.js";
 import {effect} from "@preact/signals-core";
 import {WIDTH} from "../../constants/constants.js";
 import {state} from "../../state.js";
+import gsap from "gsap";
 
 export class TextTable extends Container {
     constructor(stage, attemptsSignal) {
@@ -9,6 +10,8 @@ export class TextTable extends Container {
         this.stage = stage;
         this.attemptsSignal = attemptsSignal;
         this.alpha = 0.7
+
+        this.tween = null;
         this.stage.addChild(this);
 
         this.score = new Text({
@@ -38,13 +41,26 @@ export class TextTable extends Container {
 
         state.score.value = 0;
         this.stop2 = effect(() => {
-            this.score.text = `score: ${state.score.value}`
+
+            const target = {value: +this.score.text}
+            this.tween = gsap.to(target, {value: state.score.value, duration: 0.25,
+                onUpdate: () => {
+                    this.score.text = `score: ${Math.floor(target.value)}`
+                },
+                onComplete: () => {
+                    this.score.text = `score: ${state.score.value}`
+                }
+            });
+            return () => this.tween?.kill()
+
         })
     }
 
     destroy(options) {
         this.stop();
         this.stop2();
+        this.tween?.kill();
+        this.tween = null;
         super.destroy(options);
     }
 }

@@ -35,8 +35,4 @@ export class Bullet extends Ball{
 
         if(this.y >= HEIGHT ) this.toDelete = true;
     }
-    destroy(options) {
-        this.stop();
-        super.destroy(options);
-    }
 }

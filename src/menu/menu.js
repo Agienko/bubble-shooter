@@ -162,8 +162,8 @@ export class Menu extends Container{
     }
 
     destroy(options) {
-        this.levelValueTween.kill();
-        this.startButtonTween.kill();
+        this.levelValueTween?.kill();
+        this.startButtonTween?.kill();
         this.levelValueTween = null;
         this.startButtonTween = null;
         this.stage.removeChild(this);
