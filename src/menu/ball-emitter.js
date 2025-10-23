@@ -44,7 +44,7 @@ export class BallEmitter extends ParticleContainer{
         particle.tint = randomFromArr(COLORS);
         particle.x = Math.random() * WIDTH;
         particle.y = -100;
-        particle.vy = 1.5*(Math.random()*0.9 + 0.1)
+        particle.vy = (Math.random()*0.9 + 0.1)
         particle.vx = (Math.random() - 0.5)*0.8;
     }
 

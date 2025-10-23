@@ -10,6 +10,7 @@ import {sender} from "../sender/event-sender.js";
 import {app, resizer} from "../main.js";
 import {Arrow} from "./components/arrow.js";
 import {state} from "../state.js";
+import {TextTable} from "./components/text-table.js";
 
 export class Game extends Container{
     constructor(stage) {
@@ -24,7 +25,7 @@ export class Game extends Container{
         this.isGameOver = signal(false);
         this.balls = [];
         this.bullet = null;
-        this.attempts = 0;
+        this.attempts = signal(0);
 
         state.inProcess.value = false;
 
@@ -44,12 +45,17 @@ export class Game extends Container{
         this.deadLine.y = this.balls.find(b => b.j + 1 === BALL_COUNT_COLUMS).y + 10;
         this.addChild(this.deadLine);
 
+        this.textTable = new TextTable(this, this.attempts);
+        this.textTable.x = 10;
+        this.textTable.y = this.deadLine.y + 10;
+
+        this.addChild(this.textTable);
+
         this._onPointerUp = e => this.onPointerUp(e)
         this._onTick = e => this.onTick(e);
 
         window.addEventListener('pointerup', this._onPointerUp);
         Ticker.shared.add(this._onTick);
-
 
         this.stop = effect(() => {
             if(!this.isGameOver.value) return;
@@ -232,9 +238,9 @@ export class Game extends Container{
                 b.isOnLand = false;
             }
 
-            if(++this.attempts >= 3) {
+            if(++this.attempts.value >= 3) {
                 this.addRow();
-                this.attempts = 0;
+                this.attempts.value = 0;
             } else {
                 state.inProcess.value = false;
             }
@@ -317,7 +323,6 @@ export class Game extends Container{
 
         this.balls = null;
         this.bullet = null;
-        this.attempts = 0;
         super.destroy(p)
     }
 }

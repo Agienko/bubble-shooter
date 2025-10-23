@@ -5,6 +5,7 @@ export const state = {
     nextColor: signal('#FFFFFF'),
     inProcess: signal(false),
     angle: -Math.PI/2,
+    score: signal(0),
 }
 
 window.state = state;
