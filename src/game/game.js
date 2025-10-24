@@ -276,7 +276,7 @@ export class Game extends Container{
                 b.isOnLand = false;
             }
 
-            if(++this.attempts.value >= 3) {
+            if(++this.attempts.value > 3) {
                 this.addRow();
                 this.attempts.value = 0;
             } else {

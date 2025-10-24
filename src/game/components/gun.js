@@ -8,9 +8,8 @@ import {sound} from "@pixi/sound";
 export class Gun{
     constructor(stage) {
         this.stage = stage;
-        this.bulletTint = randomFromArr(COLORS);
-        state.nextColor.value = this.bulletTint;
-
+        state.bulletTint.value = randomFromArr(COLORS);
+        state.nextTint.value = randomFromArr(COLORS);
     }
     createBullet({x, y}){
         this.rotation = Math.PI/2 + Math.atan2(y - HEIGHT, x - WIDTH/2);
@@ -18,11 +17,10 @@ export class Gun{
         sound.play('ball-throw', {volume: 0.3, speed: 0.2, start: 0.03});
 
         const bullet = new Bullet(this.stage, {});
-        bullet.tint = this.bulletTint;
+        bullet.tint = state.bulletTint.value;
 
-        this.bulletTint = randomFromArr(COLORS);
-        state.nextColor.value = this.bulletTint;
-
-        return bullet;
+        state.bulletTint.value = state.nextTint.value;
+        state.nextTint.value = randomFromArr(COLORS);
+        return bullet
     }
 }

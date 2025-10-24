@@ -94,7 +94,7 @@ export class Arrow extends ParticleContainer{
 
         this.stop1 = effect(() => {
             if(state.inProcess.value) return;
-            this.tint = state.nextColor.value
+            this.tint = state.bulletTint.value;
         })
 
         this.stop2 = effect(() => {
@@ -164,7 +164,7 @@ export class Arrow extends ParticleContainer{
 
         const angleY = y - HEIGHT;
         const angleX = x - WIDTH / 2;
-        const minDeg = 10 * Math.PI / 360;
+        const minDeg = 14 * Math.PI / 360;
 
         let angle = Math.atan2(angleY, angleX);
 
