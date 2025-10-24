@@ -1,5 +1,5 @@
 import {Particle, ParticleContainer, Ticker} from "pixi.js";
-import {getTexture} from "../../helpers/helper.js";
+import {getBallTexture} from "../../helpers/helper.js";
 import {BALL_RADIUS, HEIGHT, WIDTH} from "../../constants/constants.js";
 import {effect} from "@preact/signals-core";
 import {state} from "../../state.js";
@@ -30,7 +30,7 @@ export class Arrow extends ParticleContainer{
         for (let i = 0; i < AMOUNT; ++i) {
             const r = i*STEP
             const mini = new Particle({
-                texture: getTexture(),
+                texture: getBallTexture(),
                 scaleX: 0.1,
                 scaleY: 0.1,
                 anchorX: 0.5,
@@ -44,7 +44,7 @@ export class Arrow extends ParticleContainer{
         }
 
         this.ball = new Particle({
-            texture: getTexture(),
+            texture: getBallTexture(),
             scaleX: 0.4,
             scaleY: 0.4,
             anchorX: 0.5,
@@ -56,7 +56,7 @@ export class Arrow extends ParticleContainer{
 
 
         this.testBall = new Particle({
-            texture: getTexture(),
+            texture: getBallTexture(),
             scaleX: 0.2,
             scaleY: 0.2,
             anchorX: 0.5,

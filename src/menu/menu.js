@@ -48,7 +48,10 @@ export class Menu extends Container{
         this.soundButton.on('pointerup', () => {
             this.soundButton.state = !this.soundButton.state;
             this.soundButton.text = this.soundButton.state ? '🔊' : '🔇';
-            sound.toggleMuteAll();
+            sound.play('click', {volume: 0.4, speed: 1.1, end: 0.1, complete: () => {
+                    !this.soundButton.state && sound.toggleMuteAll()
+                }});
+            this.soundButton.state && sound.toggleMuteAll()
         })
 
         this.addChild(this.soundButton);

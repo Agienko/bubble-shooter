@@ -289,6 +289,7 @@ export class Game extends Container{
     addRow(){
 
         gsap.to(this.ballStage, {y:BALL_COLUM_STEP, duration: 0.2, ease: 'power2.out', onComplete: () => {
+                sound.play('falling', {volume: 0.16, start: 0.2, end: 0.5, speed: 0.6, singleInstance: true});
 
                 this.ballStage.y = 0;
 
@@ -303,8 +304,8 @@ export class Game extends Container{
                         isGhost: isLastRow ? false: b.isGhost
                     });
                     if(isLastRow) {
-                        b.alpha = 0;
-                        gsap.to(b, {alpha: 1, duration: 0.2, ease: 'power2.out'});
+                        b.y = -100;
+                        gsap.to(b, {y: 0, duration: 0.2, ease: 'power2.out'});
                     }
                 }
                 state.inProcess.value = false;

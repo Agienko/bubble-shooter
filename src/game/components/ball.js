@@ -1,11 +1,11 @@
 import {Sprite} from "pixi.js";
 import {BALL_COLUM_STEP, BALL_RADIUS, BALL_SIZE, COLORS} from "../../constants/constants.js";
-import {getTexture, randomFromArr} from "../../helpers/helper.js";
+import {getBallTexture, randomFromArr} from "../../helpers/helper.js";
 import gsap from "gsap";
 
 export class Ball extends Sprite{
     constructor(stage, descriptor) {
-        super(getTexture());
+        super(getBallTexture());
         this.descriptor = descriptor;
         this.stage = stage;
         this.toDelete = false;

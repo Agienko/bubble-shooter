@@ -1,6 +1,6 @@
 import {Particle, ParticleContainer} from "pixi.js";
 import gsap from "gsap";
-import {getRandomInt, getTexture} from "../../helpers/helper.js";
+import {getRandomInt, getBallTexture} from "../../helpers/helper.js";
 import {filters, sound} from "@pixi/sound";
 import {WIDTH} from "../../constants/constants.js";
 
@@ -31,7 +31,7 @@ export class Explosion extends ParticleContainer{
 
         for (let i = 0; i < amount; ++i) {
             const particle = new Particle({
-                texture: getTexture(),
+                texture: getBallTexture(),
                 scaleX: 0.045,
                 scaleY: 0.045,
                 tint: descriptor.tint,

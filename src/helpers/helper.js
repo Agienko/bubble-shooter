@@ -15,8 +15,8 @@ export const randomFromArr = array => {
 }
 
 let texture = null;
-export let getTexture = () => {
+export let getBallTexture = () => {
     if(texture) return texture;
-    texture = Texture.from('/ball.png');
+    texture = Texture.from('ball');
     return texture;
 }

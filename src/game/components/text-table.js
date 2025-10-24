@@ -3,7 +3,7 @@ import {effect} from "@preact/signals-core";
 import {WIDTH} from "../../constants/constants.js";
 import {state} from "../../state.js";
 import gsap from "gsap";
-import {getTexture} from "../../helpers/helper.js";
+import {getBallTexture} from "../../helpers/helper.js";
 
 export class TextTable extends Container {
     constructor(stage, attemptsSignal) {
@@ -36,7 +36,7 @@ export class TextTable extends Container {
 
         this.addChild(this.attempts);
 
-        this.nextBullet = new Sprite(getTexture());
+        this.nextBullet = new Sprite(getBallTexture());
         this.nextBullet.width = 26;
         this.nextBullet.height = 26;
         this.nextBullet.position.set(WIDTH - 48, 0);
@@ -55,7 +55,7 @@ export class TextTable extends Container {
             const g = parseInt(hex.slice(3, 5), 16);
             const b = parseInt(hex.slice(5, 7), 16);
 
-            const tween = gsap.to(this.nextBulletRGB, {r, g, b, duration: 0.25, onUpdate: () => {
+            const tween = gsap.to(this.nextBulletRGB, {r, g, b, duration: 0.2, onUpdate: () => {
                     const {r, g, b} = this.nextBulletRGB;
                     this.nextBullet.tint = `rgb(${r}, ${g}, ${b})`;
                 }
