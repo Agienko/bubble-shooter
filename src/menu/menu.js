@@ -27,12 +27,31 @@ export class Menu extends Container{
         this.createLevelValueText();
         this.createStartButton();
         this.createInfo();
+        this.createSoundButton();
 
         this.alpha = 0;
         gsap.to(this, {alpha: 1, duration: 0.3})
 
         this.stage.addChild(this);
 
+    }
+
+    createSoundButton(){
+        this.soundButton = new Text({text: '🔊', style: {fontSize: 50}})
+        this.soundButton.anchor.set(0.5);
+        this.soundButton.position.set(60, 60);
+        this.soundButton.state = true;
+
+        this.soundButton.eventMode = 'static';
+        this.soundButton.cursor = 'pointer';
+
+        this.soundButton.on('pointerup', () => {
+            this.soundButton.state = !this.soundButton.state;
+            this.soundButton.text = this.soundButton.state ? '🔊' : '🔇';
+            sound.toggleMuteAll();
+        })
+
+        this.addChild(this.soundButton);
     }
     createTitle(){
         this.title = new Text({text: 'Bubble Shooter', style: {

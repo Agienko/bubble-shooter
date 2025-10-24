@@ -4,8 +4,6 @@ import {getRandomInt, getTexture} from "../../helpers/helper.js";
 import {filters, sound} from "@pixi/sound";
 import {WIDTH} from "../../constants/constants.js";
 
-let isExist = false;
-
 export class Explosion extends ParticleContainer{
     constructor(stage, descriptor) {
         super({
@@ -23,15 +21,13 @@ export class Explosion extends ParticleContainer{
 
         let amount = getRandomInt(100, 200);
 
-        if(!isExist){
-            isExist = true;
-            sound.play('explode', {
-                volume: 0.15,
-                fadeOut: 0.2,
-                end: 0.7,
-                filters: [new filters.StereoFilter(this.x/WIDTH -0.5)]
-            })
-        }
+        sound.play('explode', {
+            singleInstance: true,
+            volume: 0.15,
+            fadeOut: 0.2,
+            end: 0.7,
+            filters: [new filters.StereoFilter(this.x/WIDTH -0.5)]
+        })
 
         for (let i = 0; i < amount; ++i) {
             const particle = new Particle({
@@ -59,10 +55,4 @@ export class Explosion extends ParticleContainer{
 
         this.stage.addChild(this);
     }
-
-    destroy(options) {
-        isExist = false;
-        super.destroy(options);
-    }
-
 }
