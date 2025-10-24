@@ -187,11 +187,7 @@ export class Game extends Container{
     }
 
     calculateScore(amount){
-        const map = {
-            3: 30,
-            4: 50,
-            5: 80,
-        }
+        const map = {3: 30, 4: 50, 5: 80}
         return map[amount] ?? 120;
     }
 
@@ -199,12 +195,7 @@ export class Game extends Container{
         if(combos > 3){
             return (combos - 1) * 120 + score * 1.5;
         } else {
-            const map = {
-                0: 0,
-                1: 15,
-                2: 50,
-                3: 90,
-            }
+            const map = {0: 0, 1: 15, 2: 50, 3: 90}
             return map[combos] + score
         }
     }
