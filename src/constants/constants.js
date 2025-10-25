@@ -2,10 +2,10 @@ export const WIDTH = 780;
 export const HEIGHT = 1024;
 export const RATIO = WIDTH / HEIGHT;
 export const COLORS = [
-    // '#ffffff',
-    // '#00b2ff',
-    // '#FFFF00',
-    // '#CF51FF',
+    '#ffffff',
+    '#00b2ff',
+    '#FFFF00',
+    '#CF51FF',
     '#00ff00',
     '#FF4B4B',
 ];
