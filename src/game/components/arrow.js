@@ -121,19 +121,19 @@ export class Arrow extends ParticleContainer{
             mini.y = mini.r * sin + HEIGHT;
 
             if(this.testBall === mini) {
-                mini.r += e.deltaMS*4;
+                this.testBall.r += e.deltaMS*4;
 
-                if(this.maxR < mini.r) this.maxR = mini.r;
+                if(this.maxR < this.testBall.r) this.maxR = mini.r;
 
                 for(let i = 0; i < this.balls.length; i++){
                     const ball = this.balls[i];
                     if(ball.isGhost) continue;
-                    const dx = mini.x  - ball.globalCenter.x;
-                    const dy = mini.y - ball.globalCenter.y;
+                    const dx = this.testBall.x  - ball.globalCenter.x;
+                    const dy = this.testBall.y - ball.globalCenter.y;
 
                     if(Math.abs(dx) <= BALL_RADIUS + 10 && Math.abs(dy) <= BALL_RADIUS + 10) {
-                        this.maxR = mini.r
-                        mini.r = 0;
+                        this.maxR = this.testBall.r;
+                        this.testBall.r = 0;
                         break
                     }
                 }

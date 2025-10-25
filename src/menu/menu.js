@@ -6,11 +6,7 @@ import {state} from "../state.js";
 import {BallEmitter} from "./ball-emitter.js";
 import {sound} from "@pixi/sound";
 
-const LEVELS = [
-    {text: 'EASY', id: 2},
-    {text: 'MEDIUM', id: 1},
-    {text: 'HARD', id: 0}
-];
+const LEVELS = ['EASY', 'MEDIUM', 'HARD'];
 
 export class Menu extends Container{
     constructor(stage) {
@@ -19,8 +15,6 @@ export class Menu extends Container{
 
         this.ballEmitter = new BallEmitter(this,{});
         this.addChild(this.ballEmitter);
-
-        this.levelId = state.level;
 
         this.createTitle();
         this.createLevelStaticText();
@@ -124,7 +118,7 @@ export class Menu extends Container{
 
         this.levelValue.on('pointerup', () => this.onLevelChange())
 
-        this.levelValue.text = LEVELS[this.levelId].text;
+        this.levelValue.text = LEVELS[state.level];
         this.level.text = 'Level:';
         this.levelValueTween = gsap.to(this.levelValue.scale, {x: 1.2, y: 1.2, duration: 1.5, yoyo: true, repeat: -1, ease: 'sine.inOut'})
 
@@ -171,8 +165,8 @@ export class Menu extends Container{
     }
 
     onLevelChange(){
-        this.levelId = (this.levelId + 1) % LEVELS.length;
-        this.levelValue.text = LEVELS[this.levelId].text;
+        state.level = (state.level + 1) % LEVELS.length;
+        this.levelValue.text = LEVELS[state.level];
         sound.play('click', {volume: 0.4, speed: 1.1, end: 0.1});
     }
 
@@ -180,7 +174,6 @@ export class Menu extends Container{
         sound.play('click', {volume: 0.5});
         sound.play('begin', {end: 5.5, volume: 0.5})
         gsap.to(this, {alpha: 0, duration: 0.3, onComplete: () => {
-                state.level = LEVELS[this.levelId].id;
                 this.stage.removeChild(this);
                 this.destroy();
                 sender.send('start')

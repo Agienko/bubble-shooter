@@ -1,6 +1,6 @@
 import {Sprite} from "pixi.js";
 import {BALL_COLUM_STEP, BALL_RADIUS, BALL_SIZE, COLORS} from "../../constants/constants.js";
-import {getBallTexture, randomFromArr} from "../../helpers/helper.js";
+import {getBallTexture, randomColor} from "../../helpers/helper.js";
 import gsap from "gsap";
 
 export class Ball extends Sprite{
@@ -56,7 +56,7 @@ export class Ball extends Sprite{
     }
 
     randomTint(tint){
-        this.tint = tint ? tint : randomFromArr(COLORS)
+        this.tint = tint ? tint : randomColor()
     }
     destroy(options) {
         this.tween?.kill();

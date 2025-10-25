@@ -16,7 +16,7 @@ export class TextTable extends Container {
         this.stage.addChild(this);
 
         this.score = new Text({
-            text: 'score: 0',
+            text: '0',
             style: {
                 fontSize: 24,
                 fill: 'white',
@@ -74,10 +74,10 @@ export class TextTable extends Container {
             const target = {value: +this.score.text}
             this.tween = gsap.to(target, {value: state.score.value, duration: 0.25,
                 onUpdate: () => {
-                    this.score.text = `score: ${Math.floor(target.value)}`
+                    this.score.text = `${Math.floor(target.value)}`
                 },
                 onComplete: () => {
-                    this.score.text = `score: ${state.score.value}`
+                    this.score.text = `${state.score.value}`
                 }
             });
             return () => this.tween?.kill()

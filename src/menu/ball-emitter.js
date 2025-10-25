@@ -1,5 +1,5 @@
 import {Particle, ParticleContainer, Ticker} from "pixi.js";
-import {getBallTexture, randomFromArr} from "../helpers/helper.js";
+import {getBallTexture, randomColor} from "../helpers/helper.js";
 import {COLORS, HEIGHT, WIDTH} from "../constants/constants.js";
 
 export class BallEmitter extends ParticleContainer{
@@ -41,7 +41,7 @@ export class BallEmitter extends ParticleContainer{
         const scale = Math.random() * 0.3 + 0.1;
         particle.scaleX = scale;
         particle.scaleY = scale;
-        particle.tint = randomFromArr(COLORS);
+        particle.tint = randomColor();
         particle.x = Math.random() * WIDTH;
         particle.y = -100;
         particle.vy = (Math.random()*0.9 + 0.1)
