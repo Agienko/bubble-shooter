@@ -5,6 +5,7 @@ import {sender} from "../sender/event-sender.js";
 import {state} from "../state.js";
 import {BallEmitter} from "./ball-emitter.js";
 import {sound} from "@pixi/sound";
+import {computed, effect, signal} from "@preact/signals-core";
 
 const LEVELS = ['EASY', 'MEDIUM', 'HARD'];
 
@@ -34,19 +35,33 @@ export class Menu extends Container{
         this.soundButton = new Text({text: '🔊', style: {fontSize: 50}})
         this.soundButton.anchor.set(0.5);
         this.soundButton.position.set(60, 60);
-        this.soundButton.state = true;
 
         this.soundButton.eventMode = 'static';
         this.soundButton.cursor = 'pointer';
 
-        this.soundButton.on('pointerup', () => {
-            this.soundButton.state = !this.soundButton.state;
-            this.soundButton.text = this.soundButton.state ? '🔊' : '🔇';
-            sound.play('click', {volume: 0.4, speed: 1.1, end: 0.1, complete: () => {
-                    !this.soundButton.state && sound.toggleMuteAll()
-                }});
-            this.soundButton.state && sound.toggleMuteAll()
+        const soundStart = signal(false);
+
+        const isMuted = computed(() => {
+            return !state.soundState.value && !soundStart.value;
         })
+
+        this.soundButton.on('pointerup', () => {
+            state.soundState.value = !state.soundState.value;
+            soundStart.value = true;
+            sound.play('click', {volume: 0.4, speed: 1.1, end: 0.1, complete: () => {
+                    soundStart.value = false;
+                }});
+        })
+
+        this.stop = effect(() => {
+            isMuted.value ? sound.muteAll() : sound.unmuteAll();
+        })
+
+        this.stop2 = effect(() => {
+            this.soundButton.text = state.soundState.value ? '🔊' : '🔇';
+        })
+
+
 
         this.addChild(this.soundButton);
     }
@@ -181,6 +196,8 @@ export class Menu extends Container{
     }
 
     destroy(options) {
+        this.stop();
+        this.stop2();
         this.levelValueTween?.kill();
         this.startButtonTween?.kill();
         this.levelValueTween = null;
