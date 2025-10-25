@@ -203,7 +203,7 @@ export class Menu extends Container{
         this.levelValueTween = null;
         this.startButtonTween = null;
         this.stage.removeChild(this);
-        this.ballEmitter.destroy({children: true});
+        this.ballEmitter?.destroy({children: true});
         this.ballEmitter = null;
         super.destroy(options);
     }

@@ -14,7 +14,7 @@ export class Gun{
     createBullet({x, y}){
         this.rotation = Math.PI/2 + Math.atan2(y - HEIGHT, x - WIDTH/2);
 
-        sound.play('ball-throw', {volume: 0.3, speed: 0.2, start: 0.03});
+        sound.play('ball-throw', {volume: 0.3, speed: 0.2, start: 0.03, end: 0.05});
 
         const bullet = new Bullet(this.stage, {});
         bullet.tint = state.bulletTint.value;

@@ -1,8 +1,12 @@
 import {Particle, ParticleContainer} from "pixi.js";
 import gsap from "gsap";
-import {getRandomInt, getBallTexture} from "../../helpers/helper.js";
+import {getRandomInt, getBallTexture, randomMinMax} from "../../helpers/helper.js";
 import {filters, sound} from "@pixi/sound";
 import {WIDTH} from "../../constants/constants.js";
+
+const TWO_PI = Math.PI * 2;
+
+let totalParticles = 0;
 
 export class Explosion extends ParticleContainer{
     constructor(stage, descriptor) {
@@ -10,45 +14,46 @@ export class Explosion extends ParticleContainer{
             dynamicProperties: {
                 position: true,
                 rotation: false,
-                color: true,
+                color: false,
                 uvs: false,
-                vertex: false,
+                vertex: true,
             },
         });
         this.stage = stage;
         this.descriptor = descriptor;
         this.position.set(descriptor.x, descriptor.y);
+        let amount = totalParticles.value > 1500 ? 15 : getRandomInt(40, 110);
 
-        let amount = getRandomInt(100, 200);
-
+        const toAdd = amount;
+        totalParticles += toAdd;
         sound.play('explode', {
             singleInstance: true,
-            volume: 0.15,
-            fadeOut: 0.2,
+            volume: 0.08,
             end: 0.7,
             filters: [new filters.StereoFilter(this.x/WIDTH -0.5)]
         })
 
         for (let i = 0; i < amount; ++i) {
+            const scale = randomMinMax(3, 20)/100;
             const particle = new Particle({
                 texture: getBallTexture(),
-                scaleX: 0.045,
-                scaleY: 0.045,
+                scaleX: scale,
+                scaleY: scale,
                 tint: descriptor.tint,
+                alpha: randomMinMax(70, 95)/100
             })
             this.addParticle(particle)
+            const rnd = Math.random() * TWO_PI;
+            const x = Math.cos(rnd) * Math.random() * 314;
+            const y = Math.sin(rnd) * Math.random() * 100;
 
-            const rnd = Math.random() * Math.PI * 2;
-            const x = Math.cos(rnd) * Math.random() * 310;
-            const y = Math.sin(rnd) * Math.random() * 110;
-
-            gsap.to(particle, {x, y, alpha: 0, duration: 1, ease: 'expo.out', onComplete: () =>{
-                    amount--;
-                    this.removeParticle(particle);
-
-                    if(amount === 0) {
+            gsap.to(particle, {x, y, scaleX: 0.002, scaleY: 0.002, duration: 0.5, ease: 'circ.out',
+                onComplete: () => {
+                    if(--amount === 0) {
                         this.stage.removeChild(this);
+                        this.removeParticles()
                         this.destroy({children: true});
+                        totalParticles -= toAdd;
                     }
                 }})
         }

@@ -7,9 +7,9 @@ export class FallingBall extends Ball{
         super(stage, descriptor);
             this.position.set(descriptor.x, descriptor.y);
             this.tint = descriptor.tint;
-            gsap.to(this, {y: this.y + 320, alpha: 0, duration: 0.5, ease: 'back.in(2.0)',
+            gsap.to(this, {y: this.y + 320, alpha: 0, duration: 0.5, ease: 'back.in(2.1)',
                 onStart: () => {
-                    sound.play('falling', {volume: 0.15, speed: 1.2, singleInstance: true});
+                    sound.play('falling', {volume: 0.1, speed: 1.2, singleInstance: true});
                 },
                 onComplete: () => {
                     this.stage.removeChild(this);

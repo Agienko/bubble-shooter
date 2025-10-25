@@ -8,8 +8,6 @@ const restoreSoundState = () => {
     }
 }
 
-console.log(restoreSoundState())
-
 export const state = {
     level: 1,
     bulletTint: signal('#FFFFFF'),

@@ -256,7 +256,7 @@ export class Game extends Container{
 
             state.inProcess.value = false;
         } else {
-            sound.play('ball-throw', {speed: 0.5, volume: 0.8});
+            sound.play('ball-throw', {speed: 0.5, volume: 0.75, end: 0.1 });
             this.productivityAmount = 0;
             this.checkGameOver()
             if(this.isGameOver.value) return;

@@ -26,11 +26,11 @@ export class Bullet extends Ball{
             this.x = 0;
             this.vx = -this.vx;
 
-            sound.play('ball-throw', {start: 0.01, speed: 0.8, volume: 0.7, filters: [new filters.StereoFilter(-0.85)] })
+            sound.play('ball-throw', {start: 0.01, end: 0.2, speed: 0.8, volume: 0.2, filters: [new filters.StereoFilter(-0.7)] })
         }else if(this.x >= MAX_WIDTH) {
             this.x = MAX_WIDTH;
             this.vx = -this.vx;
-            sound.play('ball-throw', {start: 0.01, speed: 0.8, volume: 0.7, filters: [new filters.StereoFilter(0.85)] })
+            sound.play('ball-throw', {start: 0.01, end: 0.2, speed: 0.8, volume: 0.2, filters: [new filters.StereoFilter(0.7)] })
         }
 
         this.globalCenter.x = this.x + BALL_RADIUS;
