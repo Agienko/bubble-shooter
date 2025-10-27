@@ -8,6 +8,7 @@ import {Game} from "./game/game.js";
 import {sender} from "./sender/event-sender.js";
 import {Menu} from "./menu/menu.js";
 import {manifest} from "./config/manifest.js";
+import {sound} from "@pixi/sound";
 
 
 gsap.registerPlugin(PixiPlugin);
@@ -38,3 +39,17 @@ export const app = new Application();
 sender.on('start', () => new Game(app.stage));
 
 sender.on('restart', () => new Menu(app.stage));
+
+window.addEventListener('focus', () => { // sound resume fix
+    const context = sound.context.audioContext;
+
+    if (context.state === 'suspended' || context.state === 'interrupted') {
+        const onResume = () => {
+            window.removeEventListener('pointerdown', onResume)
+            sound.resumeAll();
+        }
+
+        window.addEventListener('pointerdown', onResume, { once: true, passive: true });
+
+    }
+});
